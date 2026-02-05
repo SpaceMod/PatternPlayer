@@ -1,0 +1,119 @@
+<!--
+ * Copyright (c) 2026 Gareth Bennett (SpaceMod)
+ * Licensed under the MIT License. 
+ * See LICENSE file in the project root for full license information.
+ *
+ * version: 1.0
+ * last update: 05/02/2026
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Player Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen p-2 md:p-8 flex flex-col items-center">
+
+    <div class="w-full max-w-[1400px] space-y-6">
+        
+        <header class="flex justify-between items-center glass-panel p-4 rounded-xl">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-8 bg-teal-400 rounded-full"></div>
+                <div>
+                    <h1 class="text-2xl font-black italic uppercase tracking-tighter leading-none" style="color: var(--text-primary);">Pattern<span style="color: var(--accent);">Studio</span></h1>
+                    <p class="text-[10px] uppercase font-bold tracking-widest opacity-50">Professional Sequencer</p>
+                </div>
+            </div>
+            <button id="theme-toggle" class="px-4 py-2 rounded-lg font-bold text-xs uppercase bg-slate-500/10 hover:bg-slate-500/20 transition" style="color: var(--text-primary);">
+                Theme
+            </button>
+        </header>
+
+        <div class="glass-panel p-5 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="text-[10px] font-bold uppercase opacity-60">MIDI Output</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="midi-output-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <select id="midi-output-select" class="w-full" disabled><option>No Devices</option></select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold uppercase opacity-60">Grid Structure</label>
+                <div class="flex gap-2">
+                    <select id="step-groups" class="w-full"></select>
+                    <select id="time-signature-select" class="w-1/2">
+                        <option value="4/4">4/4</option><option value="3/4">3/4</option><option value="6/8">6/8</option><option value="5/4">5/4</option><option value="7/8">7/8</option><option value="2/4">2/4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold uppercase opacity-60">Key / Octave</label>
+                <div class="flex gap-2">
+                    <select id="note-select" class="w-full">
+                        <option value="C">C</option><option value="C#">C#</option><option value="D">D</option><option value="D#">D#</option><option value="E">E</option><option value="F">F</option><option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option><option value="A">A</option><option value="A#">A#</option><option value="B">B</option>
+                    </select>
+                    <select id="octave-select" class="w-1/2">
+                        <option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold uppercase opacity-60">Synth Engine</label>
+                <select id="synth-select" class="w-full">
+                    <option value="short">Short (Pluck)</option><option value="sawtooth">Sawtooth</option><option value="square" selected>Square</option><option value="pulse">Pulse</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="glass-panel p-1 rounded-xl">
+            <div class="p-3 border-b border-slate-600/20 flex justify-between items-center opacity-70">
+                <span class="text-xs font-black uppercase tracking-widest">Sequencer Tracks</span>
+            </div>
+            
+            <div id="pattern-container" class="sequencer-area"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-panel p-4 rounded-xl flex flex-col justify-center items-center gap-3">
+                <span class="text-[10px] font-bold uppercase opacity-50">Metronome</span>
+                <div id="metronome-container" class="flex gap-2"></div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl flex flex-col justify-between">
+                <div class="flex justify-between items-end mb-2">
+                    <span class="text-xs font-bold opacity-50 uppercase">Tempo</span>
+                    <span class="text-xl font-mono font-bold" style="color: var(--accent);"><span id="tempo-display">120</span> <span class="text-xs opacity-50">BPM</span></span>
+                </div>
+                <input type="range" id="tempo-slider" min="30" max="200" value="120" class="w-full h-1 bg-slate-600 rounded-lg cursor-pointer mb-4">
+                <button id="play-pause-btn" class="w-full py-3 bg-lime-500 hover:bg-lime-400 text-slate-900 font-black rounded-lg uppercase shadow-lg shadow-lime-500/20 active:scale-95 transition">
+                    Play Pattern
+                </button>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl flex flex-col justify-center gap-2">
+                <span class="text-[10px] font-bold uppercase opacity-50 text-center mb-1">Project Management</span>
+                <div class="flex gap-2">
+                    <button id="export-btn" class="flex-1 py-2 text-xs font-bold border border-teal-500/30 text-teal-500 hover:bg-teal-500 hover:text-white rounded transition">Export XML</button>
+                    <button id="open-btn" class="flex-1 py-2 text-xs font-bold border border-indigo-500/30 text-indigo-500 hover:bg-indigo-500 hover:text-white rounded transition">Import XML</button>
+                </div>
+                <input type="file" id="file-input" accept=".xml,.musicxml" class="hidden" />
+                <p class="text-center text-[9px] opacity-30 mt-1 font-mono">Permutations: <span id="combinations-count">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

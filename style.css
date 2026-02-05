@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2026 Gareth Bennett (SpaceMod)
+ * Licensed under the MIT License. 
+ * See LICENSE file in the project root for full license information.
+ *
+ * version: 1.0
+ * last update: 05/02/2026
+ */
+
+
+/* --- THEME VARIABLES --- */
+:root {
+    --bg-main: #0f172a;      /* Slate 900 */
+    --bg-panel: #1e293b;     /* Slate 800 */
+    --bg-track: #020617;     /* Slate 950 */
+    --bg-console: #1e293b;   /* Side panels */
+    --bg-element: #334155;   /* Slate 700 */
+    --text-primary: #f8fafc; /* Slate 50 */
+    --text-secondary: #94a3b8; /* Slate 400 */
+    --accent: #2dd4bf;       /* Teal 400 */
+    --border: #475569;       /* Slate 600 */
+    
+    --pad-off: #334155;
+    --pad-on: #10b981;       /* Emerald 500 */
+    --pad-active: #f43f5e;   /* Rose 500 */
+    --pad-shadow: rgba(0,0,0,0.3);
+}
+
+.light-mode {
+    --bg-main: #f1f5f9;      /* Slate 100 */
+    --bg-panel: #ffffff;     /* White */
+    --bg-track: #e2e8f0;     /* Slate 200 */
+    --bg-console: #f8fafc;   /* Slate 50 */
+    --bg-element: #cbd5e1;   /* Slate 300 */
+    --text-primary: #0f172a; /* Slate 900 */
+    --text-secondary: #64748b; /* Slate 500 */
+    --accent: #0d9488;       /* Teal 600 */
+    --border: #cbd5e1;       /* Slate 300 */
+    
+    --pad-off: #cbd5e1;
+    --pad-on: #059669;       /* Emerald 600 */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.glass-panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- SEQUENCER LAYOUT --- */
+.sequencer-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.track-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    background-color: var(--bg-track);
+    align-items: stretch;
+    min-height: 56px;
+}
+
+.controls-left, .controls-right {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background-color: var(--bg-console);
+    z-index: 20;
+    position: sticky;
+}
+
+.controls-left { left: 0; border-right: 1px solid var(--border); }
+.controls-right { right: 0; border-left: 1px solid var(--border); }
+
+.grid-scroll-port {
+    overflow-x: auto;
+    display: flex;
+    align-items: center;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.grid-scroll-port::-webkit-scrollbar { display: none; }
+
+.step-grid {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px;
+    min-width: 100%;
+    justify-content: center; 
+}
+
+.pad {
+    width: 36px;
+    height: 42px;
+    background-color: var(--pad-off);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0; 
+    transition: all 0.1s ease;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2);
+    touch-action: manipulation;
+}
+
+.pad.beat-marker { margin-right: 12px; }
+
+.pad.is-on {
+    background-color: var(--pad-on) !important;
+    box-shadow: 0 0 12px var(--pad-on), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.pad.active {
+    border: 2px solid #fff;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.pad.is-on.active { background-color: var(--pad-active) !important; }
+
+.btn-mini {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
+    background: var(--bg-element); color: var(--text-secondary);
+}
+.btn-mini:hover { background: var(--accent); color: #fff; }
+
+select {
+    background-color: var(--bg-element);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.metro-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bg-element);
+    transition: 0.1s;
+}
+.metro-dot.beat { width: 14px; height: 14px; }
+.metro-dot.active { background: #fbbf24; box-shadow: 0 0 10px #fbbf24; transform: scale(1.3); }
+
+.toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-element); border: 1px solid var(--border); transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(18px); }
+
+input[type=range] { accent-color: var(--accent); }
+
+@media (max-width: 640px) {
+    .pad {
+        width: 6px;
+        height: 6px;
+        border-radius: 2px;
+    }
+    .step-grid {
+        gap: 3px;
+        padding: 0 4px;
+    }
+    .pad.beat-marker {
+        margin-right: 4px;
+    }
+}
